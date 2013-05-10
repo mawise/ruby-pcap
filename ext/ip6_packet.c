@@ -14,7 +14,8 @@ VALUE cIP6Packet;
     CheckTruncate(pkt, pkt->hdr.layer3_off, need, "truncated IP6")
 
 #define IPV6_VERSION_MASK 0xf0
-
+#define IPV6_FLOWLABEL_MASK 0x000fffff
+#define IPV6_TRAFFICCLASS_MASK 0x0ff00000
 
 VALUE
 setup_ip6_packet(pkt, nl_len)
@@ -50,13 +51,12 @@ static VALUE\
 }
 
 
-IP6P_METHOD(ip6p_ver,   1,  INT2FIX((ip6->ip6_vfc & IPV6_VERSION_MASK)>>4))
-
-
-
-
-
-
+IP6P_METHOD(ip6p_ver,    1,  INT2FIX((ip6->ip6_vfc & IPV6_VERSION_MASK)>>4))
+IP6P_METHOD(ip6p_tclass, 4,  INT2FIX((ntohl(ip6->ip6_flow) & IPV6_TRAFFICCLASS_MASK)>>20))
+IP6P_METHOD(ip6p_flow,   4,  INT2FIX(ntohl(ip6->ip6_flow) & IPV6_FLOWLABEL_MASK))
+IP6P_METHOD(ip6p_plen,   6,  INT2FIX(ntohs(ip6->ip6_plen)))
+IP6P_METHOD(ip6p_nxt,    7,  INT2FIX(ip6->ip6_nxt))
+IP6P_METHOD(ip6p_hlim,   8,  INT2FIX(ip6->ip6_hlim))
 
 
 void
@@ -66,7 +66,11 @@ Init_ip6_packet(void)
 
     cIP6Packet = rb_define_class_under(mPcap, "IP6Packet", cPacket);
     
-    rb_define_method(cIP6Packet, "ip6_ver",  ip6p_ver, 0);
-
+    rb_define_method(cIP6Packet, "ip6_ver",    ip6p_ver,    0);
+    rb_define_method(cIP6Packet, "ip6_tclass", ip6p_tclass, 0);
+    rb_define_method(cIP6Packet, "ip6_flow",   ip6p_flow,   0);
+    rb_define_method(cIP6Packet, "ip6_plen",   ip6p_plen,   0);
+    rb_define_method(cIP6Packet, "ip6_nxt",    ip6p_nxt,    0);
+    rb_define_method(cIP6Packet, "ip6_hlim",   ip6p_hlim,   0);
 
 }

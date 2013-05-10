@@ -288,6 +288,7 @@ PACKET_METHOD(packet_ip, rb_obj_is_kind_of(self, cIPPacket));
 PACKET_METHOD(packet_ip6, rb_obj_is_kind_of(self, cIP6Packet));
 PACKET_METHOD(packet_tcp, rb_obj_is_kind_of(self, cTCPPacket));
 PACKET_METHOD(packet_udp, rb_obj_is_kind_of(self, cUDPPacket));
+PACKET_METHOD(packet_icmp, rb_obj_is_kind_of(self, cICMPPacket));
 PACKET_METHOD(packet_length, UINT32_2_NUM(pkt->hdr.pkthdr.len));
 PACKET_METHOD(packet_caplen, UINT32_2_NUM(pkt->hdr.pkthdr.caplen));
 PACKET_METHOD(packet_time, rb_time_new(pkt->hdr.pkthdr.ts.tv_sec,
@@ -316,6 +317,7 @@ Init_packet(void)
     rb_define_method(cPacket, "ip6?", packet_ip6, 0);
     rb_define_method(cPacket, "tcp?", packet_tcp, 0);
     rb_define_method(cPacket, "udp?", packet_udp, 0);
+    rb_define_method(cPacket, "icmp?", packet_icmp, 0);
     rb_define_method(cPacket, "length", packet_length, 0);
     rb_define_method(cPacket, "size", packet_length, 0);
     rb_define_method(cPacket, "caplen", packet_caplen, 0);
