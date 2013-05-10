@@ -125,6 +125,9 @@ new_packet(data, pkthdr, dl_type)
         case ETHERTYPE_IP:
             class = setup_ip_packet(pkt, nl_len);
             break;
+        case ETHERTYPE_IPV6:
+            class = setup_ip6_packet(pkt, nl_len);
+            break;
         }
     }
 #if DEBUG
@@ -282,6 +285,7 @@ static VALUE\
 PACKET_METHOD(packet_get_udata, pkt->udata);
 PACKET_METHOD(packet_datalink, INT2FIX(pkt->hdr.dl_type));
 PACKET_METHOD(packet_ip, rb_obj_is_kind_of(self, cIPPacket));
+PACKET_METHOD(packet_ip6, rb_obj_is_kind_of(self, cIP6Packet));
 PACKET_METHOD(packet_tcp, rb_obj_is_kind_of(self, cTCPPacket));
 PACKET_METHOD(packet_udp, rb_obj_is_kind_of(self, cUDPPacket));
 PACKET_METHOD(packet_length, UINT32_2_NUM(pkt->hdr.pkthdr.len));
@@ -309,6 +313,7 @@ Init_packet(void)
     rb_define_method(cPacket, "udata=", packet_set_udata, 1);
     rb_define_method(cPacket, "datalink", packet_datalink, 0);
     rb_define_method(cPacket, "ip?", packet_ip, 0);
+    rb_define_method(cPacket, "ip6?", packet_ip6, 0);
     rb_define_method(cPacket, "tcp?", packet_tcp, 0);
     rb_define_method(cPacket, "udp?", packet_udp, 0);
     rb_define_method(cPacket, "length", packet_length, 0);
@@ -325,4 +330,5 @@ Init_packet(void)
     id_load = rb_intern("load");
     id_dump = rb_intern("dump");
     Init_ip_packet();
+    Init_ip6_packet();
 }

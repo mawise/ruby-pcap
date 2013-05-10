@@ -12,9 +12,11 @@
 #include "ruby.h"
 #include <pcap.h>
 #include <stdio.h>
+#include <net/ethernet.h>
 #include <netinet/in.h>
 #include <netinet/in_systm.h>
 #include <netinet/ip.h>
+#include <netinet/ip6.h>
 #include <arpa/inet.h>
 #ifndef IP_OFFMASK
 # define IP_OFFMASK 0x1fff
@@ -115,6 +117,13 @@ extern VALUE cIPPacket;
 void Init_ip_packet(void);
 VALUE setup_ip_packet(struct packet_object *, int);
 VALUE new_ipaddr(struct in_addr *);
+
+/* ip6_packet.c */
+#define IP6_HDR(pkt)     ((struct ip6_hdr *)LAYER3_HDR(pkt))
+#define IP6_DATA(pkt)    ((u_char *)LAYER4_HDR(pkt))
+extern VALUE cIP6Packet;
+void Init_ip6_packet(void);
+VALUE setup_ip6_packet(struct packet_object *, int);
 
 /* tcp_packet.c */
 extern VALUE cTCPPacket;

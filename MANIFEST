@@ -8,6 +8,7 @@ ruby_pcap.h
 Pcap.c
 packet.c
 ip_packet.c
+ip6_packet.c
 tcp_packet.c
 udp_packet.c
 icmp_packet.c
