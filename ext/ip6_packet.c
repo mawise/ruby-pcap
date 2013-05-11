@@ -9,6 +9,7 @@
 #include <netdb.h>
 
 VALUE cIP6Packet;
+static VALUE cIP6Address;
 
 #define CheckTruncateIp6(pkt, need) \
     CheckTruncate(pkt, pkt->hdr.layer3_off, need, "truncated IP6")
@@ -58,6 +59,50 @@ IP6P_METHOD(ip6p_plen,   6,  INT2FIX(ntohs(ip6->ip6_plen)))
 IP6P_METHOD(ip6p_nxt,    7,  INT2FIX(ip6->ip6_nxt))
 IP6P_METHOD(ip6p_hlim,   8,  INT2FIX(ip6->ip6_hlim))
 
+IP6P_METHOD(ip6p_src,    24, new_ip6addr(&ip6->ip6_src))
+IP6P_METHOD(ip6p_dst,    40, new_ip6addr(&ip6->ip6_dst))
+
+static VALUE
+ip6p_data(self)
+      VALUE self;
+{
+    struct packet_object *pkt;
+    struct ip6_hdr *ip6;
+    int len, hlen;
+    
+    DEBUG_PRINT("ip6p_data");
+    GetPacket(self, pkt);
+    CheckTruncateIp6(pkt, 40);
+    ip6 = IP6_HDR(pkt);
+
+    hlen = 40;
+    len = pkt->hdr.pkthdr.caplen - pkt->hdr.layer3_off - hlen;
+    return rb_str_new((u_char *)ip6 + hlen, len);
+}
+
+/*
+ * IPv6 Address
+ */
+
+#if SIZEOF_VOIDP < 4
+# error IP6Address assumes sizeof(void*) >= 4
+#endif
+
+#define GetIP6Address(obj, addr) {\
+    Check_Type(obj, T_DATA);\
+    addr = (struct in6_addr *)&(DATA_PTR(obj));\
+}
+
+VALUE
+new_ip6addr(addr)
+    struct in6_addr *addr;
+{
+    VALUE self;
+
+    self = Data_Wrap_Struct(cIP6Address, 0, 0, (void *)addr->s6_addr32);
+    return self;
+}
+
 
 void
 Init_ip6_packet(void)
@@ -72,5 +117,16 @@ Init_ip6_packet(void)
     rb_define_method(cIP6Packet, "ip6_plen",   ip6p_plen,   0);
     rb_define_method(cIP6Packet, "ip6_nxt",    ip6p_nxt,    0);
     rb_define_method(cIP6Packet, "ip6_hlim",   ip6p_hlim,   0);
+    rb_define_method(cIP6Packet, "ip6_data",   ip6p_data,   0);
+
+    rb_define_method(cIP6Packet, "ip6_src",    ip6p_src,    0);
+    rb_define_method(cIP6Packet, "ip6_dst",    ip6p_dst,    0);
+
+    cIP6Address = rb_define_class_under(mPcap, "IP6Address", rb_cObject);
+    
+
+
+
+
 
 }

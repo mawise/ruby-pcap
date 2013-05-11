@@ -124,6 +124,7 @@ VALUE new_ipaddr(struct in_addr *);
 extern VALUE cIP6Packet;
 void Init_ip6_packet(void);
 VALUE setup_ip6_packet(struct packet_object *, int);
+VALUE new_ip6addr(struct in6_addr *);
 
 /* tcp_packet.c */
 extern VALUE cTCPPacket;
