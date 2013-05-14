@@ -1,8 +1,10 @@
 /*
  *  ip6_packet.c
  *
- *  $Id: ip6_packet.c,v 1.1.1.1 2013/05/09 21:00:00 wise Exp $
  *  Copyright (C) 1998, 1999  Masaki Fukushima
+ * 
+ *  This file is based on ip_packet.c, Copyright Masaki Fukushima.
+ *  The modifications for support of IPv6 are by Matthew Wise
  */
 
 #include "ruby_pcap.h"
@@ -145,6 +147,61 @@ ip6addr_to_s(self)
     return rb_str_new2(str);
 }
 
+VALUE
+ip6addr_equal(self, other)
+    VALUE self, other;
+{
+    struct in6_addr *addr1;
+    struct in6_addr *addr2;
+
+    if ( rb_class_of(other) == cIP6Address) {
+      GetIP6Address(self, addr1);
+      GetIP6Address(other, addr2);
+      if (IN6_ARE_ADDR_EQUAL(addr1, addr2)) {
+        return Qtrue;
+      }
+    }
+    return Qfalse;
+}
+
+static VALUE
+ip6addr_hash(self)
+    VALUE self;
+{
+    struct in6_addr *addr;
+    GetIP6Address(self, addr);
+    return UINT32_2_NUM(addr->s6_addr32[3]);
+}
+
+
+static VALUE
+ip6addr_dump(self, limit)
+     VALUE self;
+     VALUE limit;
+{
+    struct in6_addr *addr;
+
+    GetIP6Address(self, addr);
+    return rb_str_new((char *)addr, sizeof addr);
+}
+
+static VALUE
+ip6addr_s_load(klass, str)
+     VALUE klass;
+     VALUE str;
+{
+    struct in6_addr addr;
+    int i;
+
+    if (RSTRING_LEN(str) != sizeof addr) {
+        rb_raise(rb_eArgError, "dump format error (IPAddress)");
+    }
+    for (i = 0; i < sizeof addr; i++) {
+        ((char *)&addr)[i] = RSTRING_PTR(str)[i];
+    }   
+    return new_ip6addr(&addr);
+}
+ 
 void
 Init_ip6_packet(void)
 {
@@ -168,7 +225,14 @@ Init_ip6_packet(void)
     rb_define_method(cIP6Address, "to_a",      ip6addr_to_a32, 0);
     rb_define_method(cIP6Address, "to_a32",    ip6addr_to_a32, 0);
     rb_define_method(cIP6Address, "to_a16",    ip6addr_to_a16, 0);
-    rb_define_method(cIP6Address, "to_s",      ip6addr_to_s, 0);
+    rb_define_method(cIP6Address, "to_s",      ip6addr_to_s,   0);
+    rb_define_method(cIP6Address, "==",        ip6addr_equal,  1);
+    rb_define_method(cIP6Address, "===",       ip6addr_equal,  1);
+    rb_define_method(cIP6Address, "eql?",      ip6addr_equal,  1); 
+    rb_define_method(cIP6Address, "hash",      ip6addr_hash,   0); 
+
+    rb_define_method(cIP6Address, "_dump",     ip6addr_dump,   1);
+    rb_define_singleton_method(cIP6Address, "_load", ip6addr_s_load, 1);  
 
 
 }

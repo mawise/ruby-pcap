@@ -36,6 +36,9 @@ Tim Jarratt <tjarratt@gmail.com>
 * Performance Improvements and other great contributes by
 Ilya Maykov
 
+* IPv6 Support by
+Matthew Wise <matthew.rs.wise@gmail.com>
+
 ruby-pcap is copyrighted free software by Masaki Fukushima.
 
 You can redistribute it and/or modify it under the terms of

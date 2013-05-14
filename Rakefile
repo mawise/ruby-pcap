@@ -1,6 +1,15 @@
 begin
   require 'rubygems'
   require 'jeweler'
+  require 'rake/testtask'
+
+  Rake::TestTask.new do |t|
+    t.libs<<'test'
+  end
+
+  desc "Run tests"
+  task :default => :test
+
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = "pcap"
     gemspec.summary = "Interface to LBL Packet Capture library (libpcap)"
