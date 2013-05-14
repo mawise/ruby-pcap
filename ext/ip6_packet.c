@@ -84,13 +84,10 @@ ip6p_data(self)
  * IPv6 Address
  */
 
-#if SIZEOF_VOIDP < 4
-# error IP6Address assumes sizeof(void*) >= 4
-#endif
 
 #define GetIP6Address(obj, addr) {\
     Check_Type(obj, T_DATA);\
-    addr = (struct in6_addr *)&(DATA_PTR(obj));\
+    Data_Get_Struct(obj, struct in6_addr, addr);\
 }
 
 VALUE
@@ -99,10 +96,37 @@ new_ip6addr(addr)
 {
     VALUE self;
 
-    self = Data_Wrap_Struct(cIP6Address, 0, 0, (void *)addr->s6_addr32);
+    self = Data_Wrap_Struct(cIP6Address, 0, 0, (void *)addr);
     return self;
 }
 
+VALUE
+ip6addr_to_a(self)
+    VALUE self;
+{
+    struct in6_addr *addr;
+    VALUE array;
+    int i;
+
+    GetIP6Address(self, addr);
+    array =  rb_ary_new();
+    for ( i=0; i<4; i++) {
+      rb_ary_push(array, UINT32_2_NUM(ntohl(addr->s6_addr32[i])));
+    }
+    return array;
+}
+
+VALUE
+ip6addr_to_s(self)
+    VALUE self;
+{
+    struct in6_addr *addr;
+    char str[INET6_ADDRSTRLEN];    
+
+    GetIP6Address(self, addr);
+    inet_ntop(AF_INET6, addr, str, INET6_ADDRSTRLEN);
+    return rb_str_new2(str);
+}
 
 void
 Init_ip6_packet(void)
@@ -124,7 +148,8 @@ Init_ip6_packet(void)
 
     cIP6Address = rb_define_class_under(mPcap, "IP6Address", rb_cObject);
     
-
+    rb_define_method(cIP6Address, "to_a",      ip6addr_to_a, 0);
+    rb_define_method(cIP6Address, "to_s",      ip6addr_to_s, 0);
 
 
 
