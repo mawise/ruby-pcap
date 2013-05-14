@@ -14,9 +14,9 @@ static VALUE cIP6Address;
 #define CheckTruncateIp6(pkt, need) \
     CheckTruncate(pkt, pkt->hdr.layer3_off, need, "truncated IP6")
 
-#define IPV6_VERSION_MASK 0xf0
-#define IPV6_FLOWLABEL_MASK 0x000fffff
-#define IPV6_TRAFFICCLASS_MASK 0x0ff00000
+#define IP6_VERSION_MASK 0xf0
+#define IP6_FLOWLABEL_MASK 0x000fffff
+#define IP6_TRAFFICCLASS_MASK 0x0ff00000
 
 VALUE
 setup_ip6_packet(pkt, nl_len)
@@ -52,9 +52,9 @@ static VALUE\
 }
 
 
-IP6P_METHOD(ip6p_ver,    1,  INT2FIX((ip6->ip6_vfc & IPV6_VERSION_MASK)>>4))
-IP6P_METHOD(ip6p_tclass, 4,  INT2FIX((ntohl(ip6->ip6_flow) & IPV6_TRAFFICCLASS_MASK)>>20))
-IP6P_METHOD(ip6p_flow,   4,  INT2FIX(ntohl(ip6->ip6_flow) & IPV6_FLOWLABEL_MASK))
+IP6P_METHOD(ip6p_ver,    1,  INT2FIX((ip6->ip6_vfc & IP6_VERSION_MASK)>>4))
+IP6P_METHOD(ip6p_tclass, 4,  INT2FIX((ntohl(ip6->ip6_flow) & IP6_TRAFFICCLASS_MASK)>>20))
+IP6P_METHOD(ip6p_flow,   4,  INT2FIX(ntohl(ip6->ip6_flow) & IP6_FLOWLABEL_MASK))
 IP6P_METHOD(ip6p_plen,   6,  INT2FIX(ntohs(ip6->ip6_plen)))
 IP6P_METHOD(ip6p_nxt,    7,  INT2FIX(ip6->ip6_nxt))
 IP6P_METHOD(ip6p_hlim,   8,  INT2FIX(ip6->ip6_hlim))
@@ -101,7 +101,7 @@ new_ip6addr(addr)
 }
 
 VALUE
-ip6addr_to_a(self)
+ip6addr_to_a32(self)
     VALUE self;
 {
     struct in6_addr *addr;
@@ -112,6 +112,23 @@ ip6addr_to_a(self)
     array =  rb_ary_new();
     for ( i=0; i<4; i++) {
       rb_ary_push(array, UINT32_2_NUM(ntohl(addr->s6_addr32[i])));
+    }
+    return array;
+}
+
+
+VALUE
+ip6addr_to_a16(self)
+    VALUE self;
+{
+    struct in6_addr *addr;
+    VALUE array;
+    int i;
+
+    GetIP6Address(self, addr);
+    array =  rb_ary_new();
+    for (i=0;i<8;i++) {
+      rb_ary_push(array, INT2FIX(ntohs(addr->s6_addr16[i])));
     }
     return array;
 }
@@ -148,10 +165,10 @@ Init_ip6_packet(void)
 
     cIP6Address = rb_define_class_under(mPcap, "IP6Address", rb_cObject);
     
-    rb_define_method(cIP6Address, "to_a",      ip6addr_to_a, 0);
+    rb_define_method(cIP6Address, "to_a",      ip6addr_to_a32, 0);
+    rb_define_method(cIP6Address, "to_a32",    ip6addr_to_a32, 0);
+    rb_define_method(cIP6Address, "to_a16",    ip6addr_to_a16, 0);
     rb_define_method(cIP6Address, "to_s",      ip6addr_to_s, 0);
-
-
 
 
 }
