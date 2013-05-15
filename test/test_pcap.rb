@@ -26,6 +26,35 @@ class PcapTest < Test::Unit::TestCase
     assert_equal 2, p.ip_flags
     assert p.ip_df?
     assert !p.ip_mf?
-    
+    assert_equal 6, p.ip_proto # TCP
+
+    assert_equal 3372, p.tcp_sport
+    assert_equal 3372, p.sport
+    assert_equal 80, p.tcp_dport
+    assert_equal 80, p.dport
+    assert_equal 290218380, p.tcp_ack, "tcp_ack"
+    assert_equal 951057940, p.tcp_seq, "tcp_seq"
+    assert_equal 24, p.tcp_flags
+    assert !p.tcp_fin?
+    assert !p.tcp_syn?
+    assert !p.tcp_rst?
+    assert p.tcp_psh?
+    assert p.tcp_ack?
+    assert !p.tcp_urg?
+    assert_equal 5, p.tcp_hlen, "tcp_hlen"
+    assert_equal 5, p.tcp_off, "tcp_off"
+    assert_equal 0xa958, p.tcp_sum
+    assert_equal 9660, p.tcp_win
+  end
+
+  def test_ip_udp_packet
+    p = get_packet("ipv4-udp-dns.pcap")
+    assert p.ip?
+    assert p.udp?
+    assert_equal 3009, p.udp_sport
+    assert_equal 3009, p.sport
+    assert_equal 53, p.udp_dport
+    assert_equal 53, p.dport
+    assert_equal 55, p.udp_len
   end
 end
