@@ -57,4 +57,20 @@ class PcapTest < Test::Unit::TestCase
     assert_equal 53, p.dport
     assert_equal 55, p.udp_len
   end
+
+  def test_ip6_icmp6_echoreply
+    p = get_packet("ipv6-icmpv6-echoreply.pcap")
+    assert p.ip6?
+    assert_equal "Pcap::IP6Address", p.ip6_src.class.to_s
+    assert_equal "Pcap::IP6Address", p.ip6_dst.class.to_s
+    assert_equal "3ffe:507:0:1:260:97ff:fe07:69ea", p.ip6_src.to_s
+    assert_equal "3ffe:507:0:1:200:86ff:fe05:80da", p.ip6_dst.to_s
+    assert_equal 0x3ffe0507, p.ip6_src.to_a[0]
+    assert_equal 0x00000001, p.ip6_src.to_a[1]
+    assert_equal 0x026097ff, p.ip6_src.to_a[2]
+    assert_equal 0xfe0769ea, p.ip6_src.to_a[3]
+    assert_equal 0x3ffe, p.ip6_dst.to_a16[0]
+    assert_equal 0x0507, p.ip6_dst.to_a16[1]
+    assert_equal 0x80da, p.ip6_dst.to_a16[7]
+  end
 end
