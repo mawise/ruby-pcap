@@ -141,4 +141,11 @@ extern VALUE cICMPPacket;
 void Init_icmp_packet(void);
 VALUE setup_icmp_packet(struct packet_object *, int);
 
+/* icmp6_packet.c */
+extern VALUE cICMP6Packet;
+extern VALUE cICMP6EchoPacket;
+extern VALUE cICMP6ErrorPacket;
+void Init_icmp6_packet(void);
+VALUE setup_icmp6_packet(struct packet_object *, int);
+
 #endif /* RUBY_PCAP_H */

@@ -34,7 +34,17 @@ setup_ip6_packet(pkt, nl_len)
     }
 
     class = cIP6Packet;
-
+    if (nl_len>40) {
+       int tl_len = nl_len - 40;
+       if (tl_len > 0) {
+          pkt->hdr.layer4_off = pkt->hdr.layer3_off + 40; 
+          switch (IP6_HDR(pkt)->ip6_nxt) {
+          case IPPROTO_ICMPV6:
+             class = setup_icmp6_packet(pkt, tl_len);
+             break;
+          }
+       }
+    }
     return class;
 }
 
@@ -234,5 +244,5 @@ Init_ip6_packet(void)
     rb_define_method(cIP6Address, "_dump",     ip6addr_dump,   1);
     rb_define_singleton_method(cIP6Address, "_load", ip6addr_s_load, 1);  
 
-
+    Init_icmp6_packet();
 }

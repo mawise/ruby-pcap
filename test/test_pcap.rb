@@ -72,5 +72,9 @@ class PcapTest < Test::Unit::TestCase
     assert_equal 0x3ffe, p.ip6_dst.to_a16[0]
     assert_equal 0x0507, p.ip6_dst.to_a16[1]
     assert_equal 0x80da, p.ip6_dst.to_a16[7]
+    assert p.is_a?(Pcap::ICMP6Packet), "it should be an ICMP6Packet"
+    assert p.is_a?(Pcap::ICMP6EchoPacket), "it should be an ICMP6EchoPacket"
+
+    assert p.icmp6?
   end
 end
