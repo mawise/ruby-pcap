@@ -88,11 +88,11 @@ icmp6p_pkt(self)
     CheckTruncateICMP6(pkt, 9);
     icmp6 = ICMP6_HDR(pkt);
 
-    pkthdr.caplen     = ICMP_CAPLEN(pkt) - 8;
+    pkthdr.caplen     = ICMP6_CAPLEN(pkt) - 8;
     pkthdr.len        = 0;
     pkthdr.ts.tv_sec  = 0;
     pkthdr.ts.tv_usec = 0;
-    return new_packet((char *)&icmp6->icmp6_data8, &pkthdr, DLT_RAW);
+    return new_packet((char *)&icmp6->icmp6_data8+4, &pkthdr, DLT_RAW);
 }
 
 ICMP6P_METHOD(icmp6p_data,  9, rb_str_new(icmp6->icmp6_data8, ICMP6_CAPLEN(pkt)-8))
@@ -109,9 +109,9 @@ Init_icmp6_packet(void)
     rb_define_const(mPcap, "ICMP6_PARAM_PROB",     INT2NUM(ICMP6_PARAM_PROB));
 
     cICMP6Packet = rb_define_class_under(mPcap, "ICMP6Packet", cIP6Packet);
-    rb_define_method(cICMPPacket, "icmp6_type",     icmp6p_type, 0);
-    rb_define_method(cICMPPacket, "icmp6_code",     icmp6p_code, 0);
-    rb_define_method(cICMPPacket, "icmp6_cksum",    icmp6p_cksum, 0);
+    rb_define_method(cICMP6Packet, "icmp6_type",     icmp6p_type, 0);
+    rb_define_method(cICMP6Packet, "icmp6_code",     icmp6p_code, 0);
+    rb_define_method(cICMP6Packet, "icmp6_cksum",    icmp6p_cksum, 0);
 
     cICMP6EchoPacket = rb_define_class_under(mPcap, "ICMP6EchoPacket", cICMP6Packet);
     rb_define_method(cICMP6EchoPacket, "icmp6_id",        icmp6p_id, 0);

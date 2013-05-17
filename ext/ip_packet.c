@@ -25,8 +25,10 @@ setup_ip_packet(pkt, nl_len)
     VALUE class;
 
     DEBUG_PRINT("setup_ip_packet");
-
-    if (nl_len > 0 && IP_HDR(pkt)->ip_v != 4) {
+   
+    if (nl_len > 0 && IP_HDR(pkt)->ip_v == 6) {
+        return setup_ip6_packet(pkt, nl_len);
+    } else if (nl_len > 0 && IP_HDR(pkt)->ip_v != 4) {
         return cPacket;
     }
 

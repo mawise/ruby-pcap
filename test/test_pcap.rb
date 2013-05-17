@@ -74,7 +74,24 @@ class PcapTest < Test::Unit::TestCase
     assert_equal 0x80da, p.ip6_dst.to_a16[7]
     assert p.is_a?(Pcap::ICMP6Packet), "it should be an ICMP6Packet"
     assert p.is_a?(Pcap::ICMP6EchoPacket), "it should be an ICMP6EchoPacket"
-
     assert p.icmp6?
+    assert_equal Pcap::ICMP6_ECHO_REPLY, p.icmp6_type
+    assert_equal 0, p.icmp6_code
+    assert_equal 0x5a80, p.icmp6_cksum
+    assert_equal 0x7b20, p.icmp6_id
+    assert_equal 768, p.icmp6_seq
   end
+
+  def test_ip6_err
+    p = get_packet("ipv6-icmpv6-err-timeexceeded.pcap")
+    assert p.ip6?
+    assert p.icmp6?
+    assert p.is_a? Pcap::ICMP6ErrorPacket
+    assert_equal Pcap::ICMP6_TIME_EXCEEDED, p.icmp6_type
+    assert_equal 0, p.icmp6_code, "Code should be corrent"
+    assert_equal 0xbe64, p.icmp6_cksum, "Checksum should be corect"
+    assert p.icmp6_pkt.is_a?(Pcap::Packet), "should contain a Packet"
+    assert p.icmp6_pkt.ip6?, "should contain an IPv6 Packet" 
+  end
+
 end
