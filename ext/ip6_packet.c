@@ -42,6 +42,9 @@ setup_ip6_packet(pkt, nl_len)
           case IPPROTO_ICMPV6:
              class = setup_icmp6_packet(pkt, tl_len);
              break;
+          case IPPROTO_TCP:
+             class = setup_ip6_tcp_packet(pkt, tl_len);
+             break;
           }
        }
     }
@@ -245,4 +248,5 @@ Init_ip6_packet(void)
     rb_define_singleton_method(cIP6Address, "_load", ip6addr_s_load, 1);  
 
     Init_icmp6_packet();
+    Init_ip6_tcp_packet();
 }

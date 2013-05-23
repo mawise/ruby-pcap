@@ -82,7 +82,7 @@ class PcapTest < Test::Unit::TestCase
     assert_equal 768, p.icmp6_seq
   end
 
-  def test_ip6_err
+  def test_ip6_icmp_err
     p = get_packet("ipv6-icmpv6-err-timeexceeded.pcap")
     assert p.ip6?
     assert p.icmp6?
@@ -93,5 +93,24 @@ class PcapTest < Test::Unit::TestCase
     assert p.icmp6_pkt.is_a?(Pcap::Packet), "should contain a Packet"
     assert p.icmp6_pkt.ip6?, "should contain an IPv6 Packet" 
   end
-
+  
+  def test_ip6_tcp
+    p = get_packet("ipv6-tcp-ssh.pcap")
+    assert p.ip6?
+    assert p.tcp?, "should be a tcp packet"
+    assert_equal 1022, p.tcp_sport
+    assert_equal 1022, p.sport
+    assert_equal 22, p.tcp_dport
+    assert_equal 22, p.dport
+    assert !p.tcp_urg?
+    assert p.tcp_ack?
+    assert p.tcp_psh?
+    assert !p.tcp_rst?
+    assert !p.tcp_syn?
+    assert !p.tcp_fin?
+    assert_equal 8, p.tcp_hlen, "TCP Header Length"
+    assert_equal 0xaa57, p.tcp_sum, "TCP Checksum"
+    assert_equal 8520, p.tcp_win, "TCP Window Size"
+    
+  end
 end
