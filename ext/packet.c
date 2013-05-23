@@ -287,7 +287,7 @@ PACKET_METHOD(packet_datalink, INT2FIX(pkt->hdr.dl_type));
 PACKET_METHOD(packet_ip, rb_obj_is_kind_of(self, cIPPacket));
 PACKET_METHOD(packet_ip6, rb_obj_is_kind_of(self, cIP6Packet));
 PACKET_METHOD(packet_tcp, rb_obj_is_kind_of(self, cTCPPacket) || rb_obj_is_kind_of(self, cIP6TCPPacket) );
-PACKET_METHOD(packet_udp, rb_obj_is_kind_of(self, cUDPPacket));
+PACKET_METHOD(packet_udp, rb_obj_is_kind_of(self, cUDPPacket) || rb_obj_is_kind_of(self, cIP6UDPPacket) );
 PACKET_METHOD(packet_icmp, rb_obj_is_kind_of(self, cICMPPacket));
 PACKET_METHOD(packet_icmp6, rb_obj_is_kind_of(self, cICMP6Packet));
 PACKET_METHOD(packet_length, UINT32_2_NUM(pkt->hdr.pkthdr.len));

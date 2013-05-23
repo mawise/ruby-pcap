@@ -45,6 +45,9 @@ setup_ip6_packet(pkt, nl_len)
           case IPPROTO_TCP:
              class = setup_ip6_tcp_packet(pkt, tl_len);
              break;
+          case IPPROTO_UDP:
+             class = setup_ip6_udp_packet(pkt, tl_len);
+             break;
           }
        }
     }
@@ -249,4 +252,5 @@ Init_ip6_packet(void)
 
     Init_icmp6_packet();
     Init_ip6_tcp_packet();
+    Init_ip6_udp_packet();
 }

@@ -111,6 +111,11 @@ class PcapTest < Test::Unit::TestCase
     assert_equal 8, p.tcp_hlen, "TCP Header Length"
     assert_equal 0xaa57, p.tcp_sum, "TCP Checksum"
     assert_equal 8520, p.tcp_win, "TCP Window Size"
-    
+  end
+
+  def test_ip6_udp
+    p = get_packet("ipv6-udp-dns.pcap")
+    assert p.ip6?
+    assert p.udp?
   end
 end

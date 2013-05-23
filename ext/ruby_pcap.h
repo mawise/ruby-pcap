@@ -141,6 +141,11 @@ extern VALUE cICMPPacket;
 void Init_icmp_packet(void);
 VALUE setup_icmp_packet(struct packet_object *, int);
 
+/* ip6_udp_packet.c */
+extern VALUE cIP6UDPPacket;
+void Init_ip6_udp_packet(void);
+VALUE setup_ip6_udp_packet(struct packet_object *, int);
+
 /* ip6_tcp_packet.c */
 extern VALUE cIP6TCPPacket;
 void Init_ip6_tcp_packet(void);
