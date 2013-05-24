@@ -210,7 +210,7 @@ ip6addr_s_load(klass, str)
     int i;
 
     if (RSTRING_LEN(str) != sizeof addr) {
-        rb_raise(rb_eArgError, "dump format error (IPAddress)");
+        rb_raise(rb_eArgError, "dump format error (IP6Address)");
     }
     for (i = 0; i < sizeof addr; i++) {
         ((char *)&addr)[i] = RSTRING_PTR(str)[i];

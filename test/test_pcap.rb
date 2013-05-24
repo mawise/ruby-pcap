@@ -11,6 +11,18 @@ def get_packet(filename)
 end
 
 class PcapTest < Test::Unit::TestCase
+  def test_ip_addr_marshall
+    p = get_packet("ipv4-tcp-http.pcap")
+    addr = p.src
+    assert addr.is_a? Pcap::IPAddress
+    dumped = Marshal.dump(addr)
+    loaded = Marshal.load(dumped)
+    
+    assert loaded.is_a? Pcap::IPAddress
+    assert_equal addr, loaded
+    assert_equal addr.to_s, loaded.to_s
+  end
+
   def test_ip_tcp_packet
     p = get_packet("ipv4-tcp-http.pcap")
     assert p.ip?
@@ -56,6 +68,19 @@ class PcapTest < Test::Unit::TestCase
     assert_equal 53, p.udp_dport
     assert_equal 53, p.dport
     assert_equal 55, p.udp_len
+  end
+
+  def test_ip6_addr
+    p = get_packet("ipv6-tcp-ssh.pcap")
+    assert p.ip6?
+    addr = p.ip6_src
+    assert addr.is_a? Pcap::IP6Address
+    dumped = Marshal.dump(addr)
+####  The Marshaling for Pcap::IP6Address is broken.  TODO: Fix it.  
+  #  loaded = Marshal.load(dumped)
+  #  assert loaded.is_a? Pcap::IP6Address "Marshaled and loaded ip6 address should be an ip6 address"
+  #  assert_equal addr, loaded, "Marshaled and loaded ip6 objects should be the same"
+  #  assert_equal addr.to_s, loaded.to_s, "Marshaled and loaded ip6 objects should have the same string format"
   end
 
   def test_ip6_icmp6_echoreply
