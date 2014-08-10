@@ -6,14 +6,13 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = [%q{Masaki Fukushima}, %q{Andrew Hobson}, %q{Matthew Wise}]
-  s.date = %q{2013-05-06}
+  s.date = %q{2014-08-10}
   s.description = %q{Ruby interface to LBL Packet Capture library. This library also includes classes to access packet header fields.}
   s.email = %q{fukusima@goto.info.waseda.ac.jp}
   s.extensions = [%q{ext/extconf.rb}]
   s.extra_rdoc_files = [
     "ChangeLog",
-     "README",
-     "README.ja"
+     "README"
   ]
   s.files = `git ls-files`.split($/)
   s.homepage = %q{http://www.github.com/mawise/ruby-pcap}
