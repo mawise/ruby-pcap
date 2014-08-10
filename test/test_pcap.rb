@@ -74,13 +74,15 @@ class PcapTest < MiniTest::Test
     p = get_packet("ipv6-tcp-ssh.pcap")
     assert p.ip6?
     addr = p.ip6_src
+ #   puts addr.to_s
     assert addr.is_a? Pcap::IP6Address
     dumped = Marshal.dump(addr)
-####  The Marshaling for Pcap::IP6Address is broken.  TODO: Fix it.  
-  #  loaded = Marshal.load(dumped)
-  #  assert loaded.is_a? Pcap::IP6Address "Marshaled and loaded ip6 address should be an ip6 address"
-  #  assert_equal addr, loaded, "Marshaled and loaded ip6 objects should be the same"
-  #  assert_equal addr.to_s, loaded.to_s, "Marshaled and loaded ip6 objects should have the same string format"
+    puts "The Marshaling for Pcap::IP6Address is broken.  TODO: Fix it."  
+    loaded = Marshal.load(dumped)
+    assert (loaded.is_a? Pcap::IP6Address), "Marshaled and loaded ip6 address should be an ip6 address"
+ #   puts loaded.to_s
+ #   assert_equal addr, loaded, "Marshaled and loaded ip6 objects should be the same"
+ #   assert_equal addr.to_s, loaded.to_s, "Marshaled and loaded ip6 objects should have the same string format"
   end
 
   def test_ip6_icmp6_echoreply
