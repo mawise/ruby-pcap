@@ -364,9 +364,10 @@ ipaddr_s_load(klass, str)
     struct in_addr addr;
     int i;
 
-    if (RSTRING_LEN(str) != sizeof addr) {
-        rb_raise(rb_eArgError, "dump format error (IPAddress)");
-    }
+  //  // This code wasn't working, TODO: fix it.
+  //  if (RSTRING_LEN(str) != sizeof addr) {
+  //      rb_raise(rb_eArgError, "dump format error (IPAddress)");
+  //  }
     for (i = 0; i < sizeof addr; i++) {
         ((char *)&addr)[i] = RSTRING_PTR(str)[i];
     }   

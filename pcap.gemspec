@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{pcap}
-  s.version = "0.7.13"
+  s.version = `cat VERSION`.chomp
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = [%q{Masaki Fukushima}, %q{Andrew Hobson}, %q{Matthew Wise}]

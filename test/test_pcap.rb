@@ -10,7 +10,7 @@ def get_packet(filename)
   packets.first
 end
 
-class PcapTest < Test::Unit::TestCase
+class PcapTest < MiniTest::Test
   def test_ip_addr_marshall
     p = get_packet("ipv4-tcp-http.pcap")
     addr = p.src
